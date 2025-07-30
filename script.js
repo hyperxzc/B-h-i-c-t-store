@@ -1,0 +1,235 @@
+// DOM Elements
+const searchInput = document.getElementById('searchInput');
+const productsGrid = document.getElementById('productsGrid');
+const noResults = document.getElementById('noResults');
+const backToTopButton = document.getElementById('backToTop');
+
+// Search functionality
+function initializeSearch() {
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        filterProducts(searchTerm);
+    });
+}
+
+// Filter products based on search term
+function filterProducts(searchTerm) {
+    const productCards = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
+
+    productCards.forEach(card => {
+        const productName = card.getAttribute('data-name').toLowerCase();
+        
+        if (productName.includes(searchTerm)) {
+            card.style.display = 'flex';
+            visibleCount++;
+            
+            // Add animation when showing
+            card.style.animation = 'none';
+            card.offsetHeight; // Trigger reflow
+            card.style.animation = 'fadeInUp 0.4s ease-out';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    // Show/hide no results message
+    if (visibleCount === 0 && searchTerm !== '') {
+        noResults.style.display = 'block';
+        noResults.style.animation = 'fadeInUp 0.4s ease-out';
+    } else {
+        noResults.style.display = 'none';
+    }
+}
+
+// Back to top functionality
+function initializeBackToTop() {
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('visible');
+        } else {
+            backToTopButton.classList.remove('visible');
+        }
+    });
+
+    // Smooth scroll to top when clicked
+    backToTopButton.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// Product card click handling
+function initializeProductCards() {
+    const productCards = document.querySelectorAll('.product-card');
+    
+    productCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Find the affiliate link within this card
+            const affiliateLink = this.querySelector('.product-link');
+            
+            if (affiliateLink) {
+                // Add a small visual feedback
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                
+                // Reset transform after short delay
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+                
+                // The link will open automatically due to the absolute positioned anchor
+            }
+        });
+
+        // Add keyboard accessibility
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+
+        // Make cards focusable for accessibility
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Xem sản phẩm: ${card.getAttribute('data-name')}`);
+    });
+}
+
+// Optimize images loading
+function initializeImageLoading() {
+    const images = document.querySelectorAll('.product-image img');
+    
+    images.forEach(img => {
+        img.addEventListener('load', function() {
+            this.style.opacity = '0';
+            this.style.animation = 'fadeIn 0.5s ease-out forwards';
+        });
+
+        img.addEventListener('error', function() {
+            // If image fails to load, show a placeholder background
+            this.style.display = 'none';
+            this.parentElement.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            this.parentElement.innerHTML += '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #6c757d; font-size: 0.9rem;">Hình ảnh không khả dụng</div>';
+        });
+    });
+}
+
+// Add fade in animation for images
+const fadeInKeyframes = `
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+`;
+
+// Inject keyframes into stylesheet
+const style = document.createElement('style');
+style.textContent = fadeInKeyframes;
+document.head.appendChild(style);
+
+// Enhanced search with debouncing for better performance
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Apply debouncing to search
+function initializeOptimizedSearch() {
+    const debouncedFilter = debounce((searchTerm) => {
+        filterProducts(searchTerm);
+    }, 300);
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        debouncedFilter(searchTerm);
+    });
+}
+
+// Initialize all functionality when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeOptimizedSearch();
+    initializeBackToTop();
+    initializeProductCards();
+    initializeImageLoading();
+    
+    // Add loading animation to the page
+    document.body.style.opacity = '0';
+    document.body.style.animation = 'fadeIn 0.8s ease-out forwards';
+    
+    console.log('Bộ Hài Cốt - Website loaded successfully!');
+    console.log('Để thêm sản phẩm mới, copy cấu trúc của một product-card và chỉnh sửa:');
+    console.log('1. data-name: tên sản phẩm để search');
+    console.log('2. src trong img: link hình ảnh sản phẩm');
+    console.log('3. product-name: tên hiển thị');
+    console.log('4. href trong product-link: link affiliate');
+
+    const toggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Lưu trạng thái dark mode vào localStorage
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+
+    toggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+});
+
+// Add smooth scrolling for better UX
+function addSmoothScrolling() {
+    // Enable smooth scrolling for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Call smooth scrolling initialization
+addSmoothScrolling();
+
+// Add touch-friendly interactions for mobile
+function initializeTouchInteractions() {
+    if ('ontouchstart' in window) {
+        const productCards = document.querySelectorAll('.product-card');
+        
+        productCards.forEach(card => {
+            card.addEventListener('touchstart', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            card.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    }
+}
+
+// Initialize touch interactions
+initializeTouchInteractions();
