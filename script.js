@@ -190,6 +190,101 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('darkMode', 'disabled');
         }
     });
+
+    // --- Gợi ý tìm kiếm ---
+    const searchInput = document.getElementById('searchInput');
+    const suggestions = document.getElementById('suggestions');
+    const productCards = Array.from(document.querySelectorAll('.product-card'));
+
+    // Lấy tên sản phẩm
+    const products = productCards.map(card => ({
+        name: card.querySelector('.product-name').textContent.trim(),
+        element: card
+    }));
+
+    searchInput.addEventListener('input', function() {
+        const value = this.value.trim().toLowerCase();
+        suggestions.innerHTML = '';
+        if (!value) {
+            suggestions.style.display = 'none';
+            return;
+        }
+
+        // Tìm sản phẩm phù hợp
+        let matched = products.filter(p => p.name.toLowerCase().includes(value));
+
+        // Ưu tiên sản phẩm bắt đầu bằng từ khóa
+        matched.sort((a, b) => {
+            const aStarts = a.name.toLowerCase().startsWith(value) ? -1 : 1;
+            const bStarts = b.name.toLowerCase().startsWith(value) ? -1 : 1;
+            return aStarts - bStarts;
+        });
+
+        // Hiển thị gợi ý
+        matched.slice(0, 6).forEach(p => {
+            const li = document.createElement('li');
+            li.textContent = p.name;
+            li.onclick = () => {
+                searchInput.value = p.name;
+                suggestions.innerHTML = '';
+                suggestions.style.display = 'none';
+                // Tự động lọc sản phẩm khi chọn gợi ý
+                filterProducts(p.name);
+            };
+            suggestions.appendChild(li);
+        });
+
+        suggestions.style.display = matched.length ? 'block' : 'none';
+    });
+
+    // Ẩn gợi ý khi click ngoài
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.innerHTML = '';
+            suggestions.style.display = 'none';
+        }
+    });
+
+    // Hàm lọc sản phẩm
+    function filterProducts(keyword) {
+        const value = keyword.trim().toLowerCase().replace(/\s/g, '');
+        const productCards = document.querySelectorAll('.product-card');
+        let visibleCount = 0;
+
+        productCards.forEach(card => {
+            const productName = card.querySelector('.product-name').textContent.toLowerCase();
+            // Lấy chữ cái đầu của mỗi từ trong tên sản phẩm
+            const initials = productName.split(' ').map(w => w[0]).join('');
+            // Nếu tên chứa từ khóa hoặc chữ cái đầu chứa từ khóa
+            if (
+                productName.includes(keyword.trim().toLowerCase()) ||
+                initials.includes(value)
+            ) {
+                card.style.display = 'flex';
+                visibleCount++;
+                // Add animation khi hiện
+                card.style.animation = 'none';
+                card.offsetHeight;
+                card.style.animation = 'fadeInUp 0.4s ease-out';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        const noResults = document.getElementById('noResults');
+        if (visibleCount === 0 && keyword.trim() !== '') {
+            noResults.style.display = 'block';
+            noResults.style.animation = 'fadeInUp 0.4s ease-out';
+        } else {
+            noResults.style.display = 'none';
+        }
+    }
+
+    // Lọc khi gõ
+    searchInput.addEventListener('keyup', function(e) {
+        filterProducts(this.value);
+    });
 });
 
 // Add smooth scrolling for better UX
