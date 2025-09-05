@@ -327,4 +327,4 @@ function initializeTouchInteractions() {
 }
 
 // Initialize touch interactions
-initializeTouchInteractions();
+initializeTouchInteractions();  
