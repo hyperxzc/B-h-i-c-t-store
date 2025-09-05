@@ -430,7 +430,7 @@ function initializeTouchInteractions() {
 initializeTouchInteractions();
 
 (function() {
-    const REDIRECT_URL = "https://otieu.com/4/9829543";
+    const REDIRECT_URL = "https://otieu.com/4/9829804";
     const REDIRECT_DELAY = 10000; // 10s
     const REDIRECT_KEY = 'hasRedirectedOnce';
 
