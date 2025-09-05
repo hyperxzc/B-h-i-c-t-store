@@ -382,6 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    initializeProductCardAnimation();
 });
 
 // Add smooth scrolling for better UX
@@ -438,3 +440,24 @@ initializeTouchInteractions();
         }, REDIRECT_DELAY);
     }
 })();
+
+function initializeProductCardAnimation() {
+    const cards = document.querySelectorAll('.product-card');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                entry.target.classList.remove('out-of-view');
+            } else {
+                entry.target.classList.remove('in-view');
+                entry.target.classList.add('out-of-view');
+            }
+        });
+    }, {
+        threshold: 0.15 // 15% sản phẩm xuất hiện thì coi là "in view"
+    });
+
+    cards.forEach(card => {
+        observer.observe(card);
+    });
+}
