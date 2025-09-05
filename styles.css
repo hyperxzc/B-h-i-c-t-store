@@ -21,6 +21,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.6;
@@ -370,6 +375,45 @@ body.dark-mode .suggestions-list li:hover {
     50% { transform: translateY(-12px);}
 }
 
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0 24px 0;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.pagination button {
+    padding: 6px 14px;
+    border: none;
+    background: #333;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1rem;
+    outline: none;
+}
+.pagination button.active,
+.pagination button:hover {
+    background: linear-gradient(90deg, #ff6f00, #ff8e53);
+    color: #fff;
+}
+.pagination button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.pagination .ellipsis {
+    padding: 6px 10px;
+    color: #fff;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .store-name {
@@ -455,9 +499,10 @@ body.dark-mode .suggestions-list li:hover {
 .product-card:nth-child(6) { animation-delay: 0.6s; }
 .voucher-float {
     position: fixed;
-    left: 24px;
+    left: 24px;   /* hoặc 0 nếu muốn sát mép */
     bottom: 48px;
     z-index: 1000;
+    /* Xóa mọi thuộc tính width hoặc right nếu có */
 }
 .voucher-circle-wrapper {
     box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
