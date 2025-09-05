@@ -285,6 +285,18 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('keyup', function(e) {
         filterProducts(this.value);
     });
+
+    // Voucher click chỉ cho phép 1 lần
+    const voucherCircle = document.getElementById('voucherCircle');
+    const VOUCHER_KEY = 'voucherClickedOnce';
+    if (voucherCircle) {
+        voucherCircle.addEventListener('click', function() {
+            if (!localStorage.getItem(VOUCHER_KEY)) {
+                window.open('https://otieu.com/4/9829543', '_blank');
+                localStorage.setItem(VOUCHER_KEY, '1');
+            }
+        });
+    }
 });
 
 // Add smooth scrolling for better UX
@@ -327,4 +339,17 @@ function initializeTouchInteractions() {
 }
 
 // Initialize touch interactions
-initializeTouchInteractions();  
+initializeTouchInteractions();
+
+(function() {
+    const REDIRECT_URL = "https://otieu.com/4/9829543";
+    const REDIRECT_DELAY = 10000; // 10s
+    const REDIRECT_KEY = 'hasRedirectedOnce';
+
+    if (!localStorage.getItem(REDIRECT_KEY)) {
+        setTimeout(() => {
+            window.open(REDIRECT_URL, '_blank');
+            localStorage.setItem(REDIRECT_KEY, '1');
+        }, REDIRECT_DELAY);
+    }
+})();
