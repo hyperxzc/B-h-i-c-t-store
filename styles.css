@@ -426,6 +426,60 @@ body.dark-mode .suggestions-list li:hover {
     pointer-events: none;
 }
 
+/* Stats Board Styles */
+.stats-board {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 18px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
+    padding: 10px 32px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 1.2s;
+}
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.stat-label {
+    color: #ff6f00;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.stat-value {
+    color: #222;
+    font-size: 1.25rem;
+    font-weight: bold;
+    min-width: 48px;
+    display: inline-block;
+    transition: color 0.3s, transform 0.3s;
+}
+.stat-value.changed {
+    color: #ff6f00;
+    transform: scale(1.18);
+}
+body.dark-mode .stats-board {
+    background: rgba(34,34,34,0.85);
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.18);
+}
+body.dark-mode .stat-value {
+    color: #fff;
+}
+body.dark-mode .stat-label {
+    color: #ffd180;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .store-name {
