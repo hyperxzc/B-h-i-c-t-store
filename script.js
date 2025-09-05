@@ -156,18 +156,103 @@ function initializeOptimizedSearch() {
     });
 }
 
+// Pagination functionality
+function initializePagination() {
+    const productsPerPage = 12;
+    const productCards = Array.from(document.querySelectorAll('#productsGrid .product-card'));
+    const pagination = document.getElementById('pagination');
+    let currentPage = 1;
+    const totalPages = Math.ceil(productCards.length / productsPerPage);
+
+    function showPage(page) {
+        currentPage = page;
+        productCards.forEach((card, idx) => {
+            if (idx >= (page - 1) * productsPerPage && idx < page * productsPerPage) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        renderPagination();
+    }
+
+    function renderPagination() {
+        pagination.innerHTML = '';
+
+        // << nút về đầu
+        const firstBtn = document.createElement('button');
+        firstBtn.innerHTML = '&laquo;';
+        firstBtn.disabled = currentPage === 1;
+        firstBtn.onclick = () => showPage(1);
+        pagination.appendChild(firstBtn);
+
+        // < nút lùi
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '&lt;';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => showPage(currentPage - 1);
+        pagination.appendChild(prevBtn);
+
+        // Số trang, hiển thị dạng ... nếu nhiều trang
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, currentPage + 2);
+
+        if (currentPage > 3) {
+            addPageBtn(1);
+            if (currentPage > 4) addEllipsis();
+        }
+        for (let i = start; i <= end; i++) addPageBtn(i);
+        if (currentPage < totalPages - 2) {
+            if (currentPage < totalPages - 3) addEllipsis();
+            addPageBtn(totalPages);
+        }
+
+        // > nút tiến
+        const nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '&gt;';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => showPage(currentPage + 1);
+        pagination.appendChild(nextBtn);
+
+        // >> nút về cuối
+        const lastBtn = document.createElement('button');
+        lastBtn.innerHTML = '&raquo;';
+        lastBtn.disabled = currentPage === totalPages;
+        lastBtn.onclick = () => showPage(totalPages);
+        pagination.appendChild(lastBtn);
+
+        function addPageBtn(i) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            if (i === currentPage) btn.classList.add('active');
+            btn.onclick = () => showPage(i);
+            pagination.appendChild(btn);
+        }
+        function addEllipsis() {
+            const span = document.createElement('span');
+            span.className = 'ellipsis';
+            span.textContent = '...';
+            pagination.appendChild(span);
+        }
+    }
+
+    // Khởi tạo trang đầu tiên
+    showPage(1);
+}
+
 // Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeOptimizedSearch();
     initializeBackToTop();
     initializeProductCards();
     initializeImageLoading();
+    initializePagination();
     
     // Add loading animation to the page
     document.body.style.opacity = '0';
     document.body.style.animation = 'fadeIn 0.8s ease-out forwards';
     
-    console.log('Bộ Hài Cốt - Website loaded successfully!');
+    console.log('Hàng Hay Mỗi Ngày - Website loaded successfully!');
     console.log('Để thêm sản phẩm mới, copy cấu trúc của một product-card và chỉnh sửa:');
     console.log('1. data-name: tên sản phẩm để search');
     console.log('2. src trong img: link hình ảnh sản phẩm');
