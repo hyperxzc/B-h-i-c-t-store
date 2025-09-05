@@ -384,6 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initializeProductCardAnimation();
+    initializeFakeStats();
 });
 
 // Add smooth scrolling for better UX
@@ -460,4 +461,27 @@ function initializeProductCardAnimation() {
     cards.forEach(card => {
         observer.observe(card);
     });
+}
+
+function initializeFakeStats() {
+    const onlineEl = document.getElementById('onlineCount');
+    let online = 100 + Math.floor(Math.random() * 101); // 100-200
+    onlineEl.textContent = online;
+
+    function updateOnline() {
+        // Tăng/giảm ngẫu nhiên 1-3 người, giữ trong khoảng 100-200
+        let delta = Math.floor(Math.random() * 7) - 3; // -3 đến +3
+        online += delta;
+        if (online < 100) online = 100;
+        if (online > 200) online = 200;
+        onlineEl.textContent = online;
+
+        // Hiệu ứng số đổi màu và phóng to nhẹ
+        onlineEl.classList.add('changed');
+        setTimeout(() => onlineEl.classList.remove('changed'), 400);
+
+        // Lặp lại sau 3-4 giây
+        setTimeout(updateOnline, 3000 + Math.random() * 1000);
+    }
+    setTimeout(updateOnline, 3000);
 }
