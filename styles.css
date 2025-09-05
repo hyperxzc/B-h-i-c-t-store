@@ -157,7 +157,8 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-light);
     overflow: hidden;
-    transition: var(--transition);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1);
+    will-change: transform, opacity;
     cursor: pointer;
     height: 100%;
     display: flex;
@@ -167,6 +168,17 @@ body {
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-medium);
+}
+
+.product-card.out-of-view {
+    transform: scale(0.7);
+    opacity: 0.2;
+    pointer-events: none;
+}
+.product-card.in-view {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .product-link {
